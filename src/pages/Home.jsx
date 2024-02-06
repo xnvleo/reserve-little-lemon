@@ -10,10 +10,6 @@ const Home = () => {
     return <FoodCard key={item.id} {...item} />;
   });
 
-  // const reviewCard = data_review.map((item) => {
-  //   return <TestimonyCard key={item.id} {...item} />;
-  // });
-
   const reviewData = data_review;
 
   return (

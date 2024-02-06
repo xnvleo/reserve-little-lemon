@@ -1,10 +1,5 @@
 const TestimonyCard = ({ reviewData }) => {
   return (
-    // <section className="cards">
-    //    <p>{props.customername}</p>
-    //   <p>rating: {props.rating}</p>
-    //   <p>"{props.review}" </p>
-    // </section>
     <section className="card-testimony">
       {reviewData.map((item) => (
         <div key={item.id} className="testimony--card">

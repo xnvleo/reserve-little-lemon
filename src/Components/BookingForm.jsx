@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
-const BookingForm = ({ availableTimes, dispatch }) => {
-  const [formData, setFormdata] = useState({
+function BookingForm({ availableTimes, dispatch, submitForm }) {
+  const navigate = useNavigate();
+
+  const initialValues = {
     resDate: "",
     resTime: "",
     guestNumber: "",
@@ -10,134 +14,127 @@ const BookingForm = ({ availableTimes, dispatch }) => {
     lastName: "",
     email: "",
     phone: "",
+  };
+  const validationSchema = Yup.object({
+    resDate: Yup.date().required("Required"),
+    resTime: Yup.string().required("Required"),
+    guestNumber: Yup.number()
+      .required("Required")
+      .min(1, "Must be at least 1")
+      .max(10, "Cannot be more than 10"),
+    occasion: Yup.string(),
+    firstName: Yup.string()
+      .required("Required")
+      .min(2, "Must be at least 2 characters"),
+    lastName: Yup.string()
+      .required("Required")
+      .min(2, "Must be at least 2 characters"),
+    email: Yup.string().email("Invalid email").required("Required"),
+    phone: Yup.string(),
   });
-
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setFormdata((prevFormData) => {
-      return {
-        ...prevFormData,
-        [name]: value,
-      };
+  const handleSubmit = (values) => {
+    // alert(JSON.stringify(values, null, 2));
+    submitForm(values);
+    navigate("/confirmation", {
+      state: {
+        date: values.resDate,
+        time: values.resTime,
+        name: values.firstName,
+      },
     });
-  }
-
-  function handelDateChange(event) {
-    setFormdata((prevFormData) => {
-      return {
-        ...prevFormData,
-        resDate: event.target.value,
-      };
-    });
-    dispatch(event.target.value);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    console.log(formData);
-    //  submitToApi(formData)
-  }
+  };
 
   return (
-    <form className="booking-form" onSubmit={handleSubmit}>
-      <div className="card-form">
-        <h3>Find a table</h3>
-        <label htmlFor="res-date">Choose date</label>
-        <input
-          onChange={handelDateChange}
-          type="date"
-          id="res-date"
-          className="form--input"
-          name="resDate"
-          value={formData.resDate}
-        />
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      <Form className="booking-form">
+        <label htmlFor="resDate">Choose date</label>
+        <Field name="resDate" id="resDate">
+          {(props) => {
+            const { field, meta } = props;
+            return (
+              <>
+                <input
+                  type="date"
+                  id="resDate"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    dispatch(e.target.value);
+                  }}
+                />
+                {meta.touched && meta.error ? (
+                  <div className="error">{meta.error}</div>
+                ) : null}
+              </>
+            );
+          }}
+        </Field>
 
-        <label htmlFor="res-time">Choose time</label>
-        <select
-          onChange={handleChange}
-          id="res-time"
-          name="resTime"
-          value={formData.resTime}
-        >
+        <label htmlFor="resTime">Choose time</label>
+        <Field as="select" id="resTime" name="resTime">
           {availableTimes.map((time) => (
             <option key={time} value={time}>
               {time}
             </option>
           ))}
-          ;
-        </select>
+        </Field>
+        <ErrorMessage name="resTime">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
 
-        <label htmlFor="guests">Number of guests</label>
-        <input
-          onChange={handleChange}
-          className="form--input"
+        <label htmlFor="guestNumber">Number of guests</label>
+        <Field
           type="number"
-          placeholder="1"
-          min="1"
-          max="10"
-          id="guest"
+          placeholder="1 - 10 guests"
+          id="guestNumber"
           name="guestNumber"
-          value={formData.guestNumber}
         />
+        <ErrorMessage name="guestNumber">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
+
         <label htmlFor="occasion">Occasion</label>
-        <select
-          onChange={handleChange}
-          id="occasion"
-          className="form--select"
-          name="occasion"
-          value={formData.occasion}
-        >
-          <option>--Choose--</option>
+        <Field as="select" id="occasion" name="occasion">
+          <option>---Choose---</option>
           <option>Birthday</option>
           <option>Anniversary</option>
           <option>Engagement</option>
-        </select>
-      </div>
+        </Field>
+        <ErrorMessage name="occasion">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
+        <label htmlFor="firstName">First name</label>
+        <Field type="text" id="firstName" name="firstName" />
+        <ErrorMessage name="firstName">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
 
-      <div className="card-form">
-        <h3>Contact Info</h3>
-        <input
-          aria-label="first name"
-          type="text"
-          placeholder="First Name (required)"
-          onChange={handleChange}
-          name="firstName"
-          id="firstName"
-          required
-          minLength={2}
-        />
-        <input
-          aria-label="last name"
-          type="text"
-          placeholder="Last Name"
-          onChange={handleChange}
-          name="lastName"
-          id="lastName"
-        />
-        <input
-          aria-label="email"
-          type="email"
-          placeholder="email (required)"
-          onChange={handleChange}
-          name="email"
-          id="email"
-          required
-        />
-        <input
-          aria-label="phone number"
-          type="number"
-          placeholder="phone number"
-          onChange={handleChange}
-          name="phone"
-          id="phone"
-        />
-      </div>
+        <label htmlFor="lastName">Last name</label>
+        <Field type="text" id="lastName" name="lastName" />
+        <ErrorMessage name="lastName">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
 
-      <button className="btn-submit" name="submit">
-        Make your reservation
-      </button>
-    </form>
+        <label htmlFor="email">Email</label>
+        <Field type="email" id="email" name="email" />
+        <ErrorMessage name="email">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
+        <label htmlFor="phone">Phone number</label>
+        <Field type="number" id="phone" name="phone" />
+        <ErrorMessage name="phone">
+          {(erroMsg) => <div className="error">{erroMsg}</div>}
+        </ErrorMessage>
+        <button type="submit" className="btn-submit" name="submit">
+          Make your reservation
+        </button>
+      </Form>
+    </Formik>
   );
-};
+}
 
 export default BookingForm;

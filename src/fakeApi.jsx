@@ -28,7 +28,7 @@ const seededGenerator = (date, hour) => {
     return result;
   };
   
-  const submitAPI = (formData) => true;
+  const submitAPI = (values) => true;
   
   const fakeAPI = {
     fetchAPI: fetchAPI,

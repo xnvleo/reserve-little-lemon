@@ -4,7 +4,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 0.5rem;
+  background-color: #495e57;
+  color: whitesmoke;
+  margin-bottom: 1em;
 }
 .booking-form {
   display:flex;
@@ -35,16 +37,16 @@ input {
   border: solid 1px;
   height: 3em;
   text-indent: 0.2em;
-  margin-bottom: 1em;
+  margin-bottom: 0.1em;
   font-family: inherit;
   font-size: 1rem;
 }
 
 select {
   height: 3em;
+  margin-bottom: 0.1em;
   border-radius: 0.5em;
   text-indent: 0.2em;
-  margin-bottom: 1em;
   font-family: inherit;
   font-size: 1rem;
 
@@ -52,7 +54,9 @@ select {
 
 label {
   font-weight: 600;
-  margin-bottom: 0.1rem;
+  margin-bottom: 0.3rem;
+  margin-top: 1.5em;
+  font-size: 0.9rem;
 }
 
 .btn-submit {
@@ -71,4 +75,25 @@ label {
 .btn-submit:hover {
   background-color: #495e57;
   color: white;
+}
+
+
+.error {
+  color:red;
+ font-size: 0.9rem;
+}
+
+@media (min-width:800px) {
+  .container.booking{
+    width: 100%;
+  }
+  .booking-form {
+   grid-template-columns: auto auto;
+   grid-column: auto 100px;
+  }
+  .card-form
+  .btn-submit{
+    display: block;
+    grid-row: 2;
+  }
 }

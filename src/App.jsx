@@ -8,6 +8,7 @@ import Order from "./pages/Order";
 import Login from "./pages/Login";
 import Booking from "./pages/Booking";
 import NotFound from "./pages/NotFound";
+import Confirmation from "./pages/Confirmation";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="order" element={<Order />} />
           <Route path="login" element={<Login />} />
           <Route path="booking" element={<Booking />} />
+          <Route path="confirmation" element={<Confirmation />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
