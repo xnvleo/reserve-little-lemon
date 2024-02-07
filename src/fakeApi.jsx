@@ -1,38 +1,25 @@
-// Inspired by 'alexismenest' capstone 'mockAPI' logic.
-// fetchAPI accepts a JavaScript Date object.
-// fetchAPI returns a list of randomly generated available times.
-// The times are between 15:00 and 23:30.
-// The list always begins with "--- Select a Time---"
-// I found this useful for debugging.
-//
-// submitAPI always returns 'true'.
+const seededRandom = (seed) => {
+  const m = 2 ** 35 - 31;
+  const a = 185852;
+  let s = seed % m;
 
-const seededGenerator = (date, hour) => {
-    const m = 9;
-    const d = date.getDate();
-    const result = ((d + hour) % m) / 10;
-  
-    return result;
-  };
-  
-  const fetchAPI = (date) => {
-    let result = [];
-  
-    result.push("--- Select a Time ---");
-  
-    for (let hour = 15; hour <= 23; hour++) {
-      if (seededGenerator(date, hour) < 0.5) result.push(hour + ":00");
-      if (seededGenerator(date, hour + 7) < 0.5) result.push(hour + ":30");
-    }
-  
-    return result;
-  };
-  
-  const submitAPI = (values) => true;
-  
-  const fakeAPI = {
-    fetchAPI: fetchAPI,
-    submitAPI: submitAPI,
-  };
-  
-  export { fetchAPI, submitAPI };
+  return () => (s = (s * a) % m) / m;
+};
+
+const fetchAPI = (date) => {
+  let result = [];
+  let random = seededRandom(date.getDate());
+
+  for (let i = 17; i <= 23; i++) {
+    if (random() < 0.5) result.push(i + ":00");
+    if (random() < 0.5) result.push(i + ":30");
+  }
+
+  return result;
+};
+
+const submitAPI = (values) => {
+  return true;
+};
+
+export { fetchAPI, submitAPI };
