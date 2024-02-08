@@ -38,3 +38,5 @@ const Booking = () => {
 };
 
 export default Booking;
+
+export{updateTimes, initializeTimes}
